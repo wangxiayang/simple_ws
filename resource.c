@@ -9,10 +9,8 @@
 
 */
 
-
 #include <unistd.h>
 #include <fcntl.h>
-
 #include <string.h>
 #include <stdio.h>
 
@@ -24,7 +22,6 @@
 /*  Change this string to change the root directory that
     the server will use, i.e. /index.html will translate
     here to /home/httpd/html/index.html                   */
-static char path[1000];
 const char *root_path = "/Users/xywang_ipads/llvm/example/taint/webserv/web";
 
 /*  Returns a resource  */
@@ -55,6 +52,7 @@ int Check_Resource(struct ReqInfo * reqinfo) {
 	data, so clean it up just in case.    */
     CleanURL(reqinfo->resource);
 
+	char path[512];
 	path[0] = '\0';
 	strcat(path, root_path);
 
