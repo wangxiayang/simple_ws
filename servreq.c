@@ -17,8 +17,6 @@
 #include "resphead.h"
 #include "resource.h"
 
-extern int first_header;
-
 /*  Service an HTTP request  */
 int Service_Request(int conn) {
 
@@ -27,8 +25,6 @@ int Service_Request(int conn) {
 
     InitReqInfo(&reqinfo);
     
-	// magic number..
-	first_header = 1;
     /*  Get HTTP request  */
     if (Get_Request(conn, &reqinfo) < 0) {
 		Error_Warn("Failed to parse request");

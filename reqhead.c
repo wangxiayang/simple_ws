@@ -21,7 +21,7 @@
 #include "servreq.h"
 #include "helper.h"
 
-int first_header = 1;
+__thread int first_header;
 
 /*  Parses a string and updates a request
     information structure if necessary.    */
@@ -87,7 +87,6 @@ int Parse_HTTP_Header(char *buffer, struct ReqInfo *reqinfo) {
 		return 0;
     }
 
-
     /*  If we get here, we have further headers aside from the
 	request line to parse, so this is a "full" HTTP request.  */
 
@@ -146,6 +145,7 @@ int Parse_HTTP_Header(char *buffer, struct ReqInfo *reqinfo) {
     this is received, we terminate the connection.               */
 
 int Get_Request(int conn, struct ReqInfo *reqinfo) {
+	first_header = 1;
 
     char buffer[MAX_REQ_LINE] = {0};
     int rval;
