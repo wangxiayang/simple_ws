@@ -24,7 +24,7 @@
 /*  Prints an error message and quits  */
 
 void Error_Quit(char const * msg) {
-    fprintf(stderr, "WEBSERV: %s\n", msg);
+    fprintf(stderr, "\33[0;31mWEBSERV: %s\33[m\n", msg);
     exit(EXIT_FAILURE);
 }
 
