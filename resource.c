@@ -24,9 +24,8 @@
 /*  Change this string to change the root directory that
     the server will use, i.e. /index.html will translate
     here to /home/httpd/html/index.html                   */
-
-static char server_root[1000] = "/home/httpd/html";
-
+static char path[1000];
+const char *root_path = "/Users/xywang_ipads/llvm/example/taint/webserv";
 
 /*  Returns a resource  */
 
@@ -54,14 +53,14 @@ int Check_Resource(struct ReqInfo * reqinfo) {
 
     /*  Resource name can contain urlencoded
 	data, so clean it up just in case.    */
-
     CleanURL(reqinfo->resource);
 
-    
-    /*  Concatenate resource name to server root, and try to open  */
+	path[0] = '\0';
+	strcat(path, root_path);
 
-    strcat(server_root, reqinfo->resource);
-    return open(server_root, O_RDONLY);
+    /*  Concatenate resource name to server root, and try to open  */
+    strcat(path, reqinfo->resource);
+    return open(path, O_RDONLY);
 }
 
 

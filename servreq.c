@@ -31,7 +31,7 @@ int Service_Request(int conn) {
 	first_header = 1;
     /*  Get HTTP request  */
     if (Get_Request(conn, &reqinfo) < 0) {
-		Error_Warn("Failed to parse request.");
+		Error_Warn("Failed to parse request");
 		return -1;
 	}
 	
@@ -42,7 +42,7 @@ int Service_Request(int conn) {
 	printf("\n");
 
 	if (reqinfo.method == 2)
-		Error_Warn("Unsupported request.");
+		Error_Warn("Unsupported method");
     
     /*  Check whether resource exists, whether we have permission
 	to access it, and update status code accordingly.          */
