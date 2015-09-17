@@ -19,7 +19,8 @@
 
 /*  Function prototypes  */
 
-void    Error_Quit(char const * msg);
+void Error_Quit(char const *msg);
+void Error_Warn(const char *msg);
 int     Trim      (char * buffer);
 int     StrUpper  (char * buffer);
 void    CleanURL  (char * buffer);

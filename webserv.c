@@ -9,7 +9,6 @@
 
 */
 
-
 #include <sys/socket.h>       /*  socket definitions        */
 #include <sys/types.h>        /*  socket types              */
 #include <sys/wait.h>         /*  for waitpid()             */
@@ -53,17 +52,18 @@ int main(int argc, char *argv[]) {
 
     /*  Loop infinitely to accept and service connections  */
     while (1) {
-
 		int conn;
 		/*  Wait for connection  */
 		if ((conn = accept(listener, NULL, NULL)) < 0)
 		    Error_Quit("Error calling accept()");
+		printf("\33[0;32mNew Connection..\33[m\n");
 
 		Service_Request(conn);
 
 		/*  Close connected socket and exit  */
 		if (close(conn) < 0)
 			Error_Quit("Error closing connection socket.");
+		printf("\33[0;34mConnection closed.\33[m\n");
     }
 
     return EXIT_FAILURE;    /*  We shouldn't get here  */

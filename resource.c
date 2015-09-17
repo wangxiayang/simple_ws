@@ -66,7 +66,6 @@ int Check_Resource(struct ReqInfo * reqinfo) {
 
 
 /*  Returns an error message  */
-
 int Return_Error_Msg(int conn, struct ReqInfo * reqinfo) {
     
     char buffer[100];

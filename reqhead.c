@@ -12,6 +12,7 @@
 
 #include <sys/time.h>             /*  For select()  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -20,59 +21,51 @@
 #include "servreq.h"
 #include "helper.h"
 
+int first_header = 1;
 
 /*  Parses a string and updates a request
     information structure if necessary.    */
 
-int Parse_HTTP_Header(char * buffer, struct ReqInfo * reqinfo) {
+int Parse_HTTP_Header(char *buffer, struct ReqInfo *reqinfo) {
 
-    static int first_header = 1;
-    char      *temp;
-    char      *endptr;
-    int        len;
+    char *temp;
+    char *endptr;
+    int len;
 
+    if (first_header == 1) {
+		/*  If first_header is 0, this is the first line of
+		    the HTTP request, so this should be the request line.  */
 
-    if ( first_header == 1 ) {
+		/*  Get the request method, which is case-sensitive. This
+		    version of the server only supports the GET and HEAD
+		    request methods.                                        */
+		if (!strncmp(buffer, "GET ", 4)) {
+		    reqinfo->method = GET;
+		    buffer += 4;
+		}
+		else if (!strncmp(buffer, "HEAD ", 5)) {
+		    reqinfo->method = HEAD;
+		    buffer += 5;
+		}
+		else {
+		    reqinfo->method = UNSUPPORTED;
+		    reqinfo->status = 501;
+		    return -1;
+		}
 
-	/*  If first_header is 0, this is the first line of
-	    the HTTP request, so this should be the request line.  */
+		/*  Skip to start of resource  */
+		while ( *buffer && isspace(*buffer) )
+		    buffer++;
 
-
-	/*  Get the request method, which is case-sensitive. This
-	    version of the server only supports the GET and HEAD
-	    request methods.                                        */
-
-	if ( !strncmp(buffer, "GET ", 4) ) {
-	    reqinfo->method = GET;
-	    buffer += 4;
-	}
-	else if ( !strncmp(buffer, "HEAD ", 5) ) {
-	    reqinfo->method = HEAD;
-	    buffer += 5;
-	}
-	else {
-	    reqinfo->method = UNSUPPORTED;
-	    reqinfo->status = 501;
-	    return -1;
-	}
-
-
-	/*  Skip to start of resource  */
-
-	while ( *buffer && isspace(*buffer) )
-	    buffer++;
-
-
-	/*  Calculate string length of resource...  */
-
-	endptr = strchr(buffer, ' ');
-	if ( endptr == NULL )
-	    len = strlen(buffer);
-	else
-	    len = endptr - buffer;
-	if ( len == 0 ) {
-	    reqinfo->status = 400;
-	    return -1;
+		/*  Calculate string length of resource...  */
+		endptr = strchr(buffer, ' ');
+		if ( endptr == NULL )
+		    len = strlen(buffer);
+		else
+		    len = endptr - buffer;
+		if ( len == 0 ) {
+		    reqinfo->status = 400;
+		    return -1;
 	}
 
 	/*  ...and store it in the request information structure.  */
@@ -155,19 +148,16 @@ int Parse_HTTP_Header(char * buffer, struct ReqInfo * reqinfo) {
     wait for the next complete header. If we timeout before
     this is received, we terminate the connection.               */
 
-int Get_Request(int conn, struct ReqInfo * reqinfo) {
+int Get_Request(int conn, struct ReqInfo *reqinfo) {
 
-    char   buffer[MAX_REQ_LINE] = {0};
-    int    rval;
+    char buffer[MAX_REQ_LINE] = {0};
+    int rval;
     fd_set fds;
     struct timeval tv;
 
-
     /*  Set timeout to 5 seconds  */
-
     tv.tv_sec  = 5;
     tv.tv_usec = 0;
-
 
     /*  Loop through request headers. If we have a simple request,
 	then we will loop only once. Otherwise, we will loop until
@@ -175,44 +165,31 @@ int Get_Request(int conn, struct ReqInfo * reqinfo) {
 	or until select() times out, whichever is sooner.                */
 
     do {
+		/*  Reset file descriptor set  */
+		FD_ZERO(&fds);
+		FD_SET(conn, &fds);
 
-	/*  Reset file descriptor set  */
+		/*  Wait until the timeout to see if input is ready  */
+		rval = select(conn + 1, &fds, NULL, NULL, &tv);
 
-	FD_ZERO(&fds);
-	FD_SET (conn, &fds);
+		/*  Take appropriate action based on return from select()  */
+		if ( rval < 0 )
+		    Error_Quit("Error calling select() in get_request()");
+		else if ( rval == 0 )
+		    /*  input not ready after timeout  */
+		    return -1;
+		else {
+		    /*  We have an input line waiting, so retrieve it  */
+		    Readline(conn, buffer, MAX_REQ_LINE - 1);
+		    Trim(buffer);
 
+		    if (buffer[0] == '\0')
+				break;
 
-	/*  Wait until the timeout to see if input is ready  */
-
-	rval = select(conn + 1, &fds, NULL, NULL, &tv);
-
-
-	/*  Take appropriate action based on return from select()  */
-
-	if ( rval < 0 ) {
-	    Error_Quit("Error calling select() in get_request()");
-	}
-	else if ( rval == 0 ) {
-
-	    /*  input not ready after timeout  */
-
-	    return -1;
-
-	}
-	else {
-
-	    /*  We have an input line waiting, so retrieve it  */
-
-	    Readline(conn, buffer, MAX_REQ_LINE - 1);
-	    Trim(buffer);
-
-	    if ( buffer[0] == '\0' )
-		break;
-
-	    if ( Parse_HTTP_Header(buffer, reqinfo) )
-		break;
-	}
-    } while ( reqinfo->type != SIMPLE );
+		    if (Parse_HTTP_Header(buffer, reqinfo))
+				break;
+		}
+    } while (reqinfo->type != SIMPLE);
 
     return 0;
 }

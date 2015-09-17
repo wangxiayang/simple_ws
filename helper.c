@@ -20,17 +20,17 @@
 
 #include "helper.h"
 
-
 /*  Prints an error message and quits  */
-
 void Error_Quit(char const * msg) {
-    fprintf(stderr, "\33[0;31mWEBSERV: %s\33[m\n", msg);
+	Error_Warn(msg);
     exit(EXIT_FAILURE);
 }
 
- 
-/*  Read a line from a socket  */
+void Error_Warn(char const *msg) {
+    fprintf(stderr, "\33[0;31mWEBSERV: %s\33[m\n", msg);
+}
 
+/*  Read a line from a socket  */
 ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
     ssize_t n, rc;
     char    c, *buffer;

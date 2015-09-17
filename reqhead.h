@@ -22,10 +22,10 @@ enum Req_Type   { SIMPLE, FULL };
 struct ReqInfo {
     enum Req_Method method;
     enum Req_Type   type;
-    char           *referer;
-    char           *useragent;
-    char           *resource;
-    int             status;
+    char *referer;
+    char *useragent;
+    char *resource;
+    int status;
 };
 
 
