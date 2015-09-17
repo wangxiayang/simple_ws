@@ -35,11 +35,8 @@ int Service_Request(int conn) {
 		return -1;
 	}
 	
-	printf("method=%d type=%d\n", reqinfo.method, reqinfo.type);
 	printf("referer=%s\n", reqinfo.referer);
-	printf("useragent=%s\n", reqinfo.useragent);
 	printf("resource=%s\n", reqinfo.resource);
-	printf("\n");
 
 	if (reqinfo.method == 2)
 		Error_Warn("Unsupported method");
