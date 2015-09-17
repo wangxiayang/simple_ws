@@ -25,7 +25,7 @@
     the server will use, i.e. /index.html will translate
     here to /home/httpd/html/index.html                   */
 static char path[1000];
-const char *root_path = "/Users/xywang_ipads/llvm/example/taint/webserv";
+const char *root_path = "/Users/xywang_ipads/llvm/example/taint/webserv/web";
 
 /*  Returns a resource  */
 
