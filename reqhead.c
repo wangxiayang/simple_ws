@@ -54,40 +54,37 @@ int Parse_HTTP_Header(char *buffer, struct ReqInfo *reqinfo) {
 		}
 
 		/*  Skip to start of resource  */
-		while ( *buffer && isspace(*buffer) )
+		while (*buffer && isspace(*buffer))
 		    buffer++;
 
 		/*  Calculate string length of resource...  */
 		endptr = strchr(buffer, ' ');
-		if ( endptr == NULL )
+		if (endptr == NULL)
 		    len = strlen(buffer);
 		else
 		    len = endptr - buffer;
-		if ( len == 0 ) {
+		if (len == 0) {
 		    reqinfo->status = 400;
 		    return -1;
-	}
+		}
 
-	/*  ...and store it in the request information structure.  */
-
-	reqinfo->resource = calloc(len + 1, sizeof(char));
-	strncpy(reqinfo->resource, buffer, len);
-
+		/*  ...and store it in the request information structure.  */
+		reqinfo->resource = calloc(len + 1, sizeof(char));
+		strncpy(reqinfo->resource, buffer, len);
 	
-	/*  Test to see if we have any HTTP version information.
-	    If there isn't, this is a simple HTTP request, and we
-	    should not try to read any more headers. For simplicity,
-	    we don't bother checking the validity of the HTTP version
-	    information supplied - we just assume that if it is
-	    supplied, then it's a full request.                        */
-
-	if ( strstr(buffer, "HTTP/") )
-	    reqinfo->type = FULL;
-	else
-	    reqinfo->type = SIMPLE;
-
-	first_header = 0;
-	return 0;
+		/*  Test to see if we have any HTTP version information.
+		    If there isn't, this is a simple HTTP request, and we
+		    should not try to read any more headers. For simplicity,
+		    we don't bother checking the validity of the HTTP version
+		    information supplied - we just assume that if it is
+		    supplied, then it's a full request.                        */
+		if (strstr(buffer, "HTTP/"))
+		    reqinfo->type = FULL;
+		else
+		    reqinfo->type = SIMPLE;
+	
+		first_header = 0;
+		return 0;
     }
 
 
@@ -105,8 +102,8 @@ int Parse_HTTP_Header(char *buffer, struct ReqInfo *reqinfo) {
 
     endptr = strchr(buffer, ':');
     if ( endptr == NULL ) {
-	reqinfo->status = 400;
-	return -1;
+		reqinfo->status = 400;
+		return -1;
     }
 
     temp = calloc( (endptr - buffer) + 1, sizeof(char) );

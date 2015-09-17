@@ -88,12 +88,11 @@ ssize_t Writeline(int sockd, const void *vptr, size_t n) {
 
 
 /*  Removes trailing whitespace from a string  */
-
 int Trim(char * buffer) {
     int n = strlen(buffer) - 1;
 
-    while ( !isalnum(buffer[n]) && n >= 0 )
-	buffer[n--] = '\0';
+    while (!isalnum(buffer[n]) && n >= 0 && buffer[n] <= 32)
+		buffer[n--] = '\0';
 
     return 0;
 }

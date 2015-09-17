@@ -31,7 +31,7 @@ struct ReqInfo {
 
 /*  Global macros/variables  */
 
-#define MAX_REQ_LINE         (1024)
+#define MAX_REQ_LINE 1024
 
 
 /*  Function prototypes  */

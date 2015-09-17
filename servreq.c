@@ -31,13 +31,10 @@ int Service_Request(int conn) {
 	first_header = 1;
     /*  Get HTTP request  */
     if (Get_Request(conn, &reqinfo) < 0) {
-		first_header = 0;
 		Error_Warn("Failed to parse request.");
 		return -1;
 	}
-	first_header = 1;
 	
-	printf("---------------\n");
 	printf("method=%d type=%d\n", reqinfo.method, reqinfo.type);
 	printf("referer=%s\n", reqinfo.referer);
 	printf("useragent=%s\n", reqinfo.useragent);
@@ -68,7 +65,6 @@ int Service_Request(int conn) {
 		Return_Error_Msg(conn, &reqinfo);
 
 	printf("status=%d\n", reqinfo.status);
-	printf("---------------\n");
 
     if (resource > 0 && close(resource) < 0)
 	    Error_Quit("Error closing resource.");
