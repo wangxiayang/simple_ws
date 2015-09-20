@@ -17,7 +17,7 @@ resphead.o: resphead.c resphead.h helper.h
 	gcc -o resphead.o resphead.c -c -pedantic -Wall
 
 resource.o: resource.c resource.h
-	gcc -o resource.o resource.c -c -pedantic -Wall
+	gcc -o resource.o resource.c -c -pedantic -Wall -D CONTENT_PATH=\"$(shell pwd)/web\"
 
 clean:
 	rm -f *.o webserv

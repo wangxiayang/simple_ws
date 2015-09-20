@@ -22,7 +22,7 @@
 /*  Change this string to change the root directory that
     the server will use, i.e. /index.html will translate
     here to /home/httpd/html/index.html                   */
-const char *root_path = "/home/azureuser/llvm/example/taint/webserv/web";
+const char *root_path = ""CONTENT_PATH;
 
 /*  Returns a resource  */
 
