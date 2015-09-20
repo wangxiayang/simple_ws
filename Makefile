@@ -1,23 +1,23 @@
 webserv: webserv.o helper.o servreq.o reqhead.o resphead.o resource.o
-	gcc -o webserv webserv.o helper.o servreq.o reqhead.o resphead.o resource.o -Wall -lpthread
+	gcc -o $@ $^ -Wall -lpthread
 
-webserv.o: webserv.c helper.h servreq.h
-	gcc -o webserv.o webserv.c -c -pedantic -Wall
+webserv.o: webserv.c
+	gcc -o $@ $^ -c -Wall
 
-helper.o: helper.c helper.h
-	gcc -o helper.o helper.c -c -pedantic -Wall
+helper.o: helper.c
+	gcc -o $@ $^ -c -Wall
 
-servreq.o: servreq.c servreq.h helper.h
-	gcc -o servreq.o servreq.c -c -pedantic -Wall
+servreq.o: servreq.c
+	gcc -o $@ $^ -c -Wall
 
-reqhead.o: reqhead.c reqhead.h servreq.h helper.h
-	gcc -o reqhead.o reqhead.c -c -pedantic -Wall
+reqhead.o: reqhead.c
+	gcc -o $@ $^ -c -Wall
 
-resphead.o: resphead.c resphead.h helper.h
-	gcc -o resphead.o resphead.c -c -pedantic -Wall
+resphead.o: resphead.c
+	gcc -o $@ $^ -c -Wall
 
-resource.o: resource.c resource.h
-	gcc -o resource.o resource.c -c -pedantic -Wall -D CONTENT_PATH=\"$(shell pwd)/web\"
+resource.o: resource.c
+	gcc -o $@ $^ -c -Wall -D CONTENT_PATH=\"$(shell pwd)/web\"
 
 clean:
 	rm -f *.o webserv
