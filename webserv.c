@@ -50,6 +50,12 @@ int main(int argc, char *argv[]) {
     if ((listener = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		Error_Quit("Couldn't create listening socket.");
 
+	int yes = 1;
+	if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+	    perror("setsockopt");
+		exit(1);
+	}
+
     /*  Populate socket address structure  */
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;

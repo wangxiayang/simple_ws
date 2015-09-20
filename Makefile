@@ -1,5 +1,5 @@
 webserv: webserv.o helper.o servreq.o reqhead.o resphead.o resource.o
-	gcc -o webserv webserv.o helper.o servreq.o reqhead.o resphead.o resource.o -Wall
+	gcc -o webserv webserv.o helper.o servreq.o reqhead.o resphead.o resource.o -Wall -lpthread
 
 webserv.o: webserv.c helper.h servreq.h
 	gcc -o webserv.o webserv.c -c -pedantic -Wall
